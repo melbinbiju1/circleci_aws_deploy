@@ -7,7 +7,7 @@ jobs:
       docker_layer_caching: true
     environment:
       TAG: 0.1.${CIRCLE_BUILD_NUM}
-      IMAGE_NAME: my-image-name
+      IMAGE_NAME: my_img412330
     steps:
       - checkout
       - run:
@@ -42,7 +42,7 @@ jobs:
     docker:
       - image: circleci/python:3.6.2-stretch-browsers
         auth:
-          username: mydockerhub-user
+          username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
@@ -78,6 +78,116 @@ workflows:
   build-test-deploy:
     jobs:
       - build-and-test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#version: 2.1
+#
+#jobs:
+#  build-and-test:
+#    machine:
+#      image: circleci/classic:latest
+#      docker_layer_caching: true
+#    environment:
+#      TAG: 0.1.${CIRCLE_BUILD_NUM}
+#      IMAGE_NAME: my-image-name
+#    steps:
+#      - checkout
+#      - run:
+#          name: Install AWS CLI tool
+#          command: |
+#            sudo apt-get update && sudo apt-get install -y awscli
+#      - run:
+#          name: Install Docker
+#          command: |
+#            sudo apt-get install -y docker.io
+#            sudo systemctl start docker
+#      - run:
+#          name: Build Docker image
+#          command: |
+#            docker build -t $DOCKERHUB_USER/$IMAGE_NAME:$TAG .
+#      - store_artifacts:
+#          path: /tmp/my-image.tar.gz
+#          destination: my-image
+#      - run:
+#          name: Install Python deps in a venv
+#          command: |
+#            python3 -m venv venv
+#            . venv/bin/activate
+#            pip install --upgrade pip
+#            pip install -r requirements.txt
+#      - run:
+#          command: |
+#            . venv/bin/activate
+#            python -m pytest -v tests/test_script.py
+#
+#  deploy:
+#    docker:
+#      - image: circleci/python:3.6.2-stretch-browsers
+#        auth:
+#          username: mydockerhub-user
+#          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+#    steps:
+#      - checkout
+#      - restore_cache:
+#          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+#      - run:
+#          name: Install Python deps in a venv
+#          command: |
+#            python3 -m venv venv
+#            . venv/bin/activate
+#            pip install --upgrade pip
+#            pip install -r requirements.txt
+#      - save_cache:
+#          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+#          paths:
+#            - "venv"
+#      - setup_remote_docker:
+#          version: 19.03.13
+#      - run:
+#          name: Load Docker image from artifact
+#          command: |
+#            mkdir -p /tmp/my-image
+#            tar xzf /tmp/my-image.tar.gz -C /tmp/my-image
+#            docker load -i /tmp/my-image/my-image.tar
+#      - run:
+#          name: Push Docker image to AWS ECR
+#          command: |
+#            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+#            docker tag $DOCKERHUB_USER/$IMAGE_NAME:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:$TAG
+#            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:$TAG
+#
+#workfows:
+#  build-test-deploy:
+#    jobs:
+#      - build-and-test
+
+
+
+
+
+
+
+
 
 
 
