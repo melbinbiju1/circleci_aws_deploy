@@ -69,14 +69,8 @@ jobs:
             docker load -i /tmp/my-image/my-image.tar
       - run:
           name: Push Docker image to AWS ECR
-          command: |
-#            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-#            docker tag $DOCKERHUB_USER/$IMAGE_NAME:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:$TAG
-#            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:$TAG
-            
-            
+          command: |          
             aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin public.ecr.aws/s9p2p2e3
-            # docker build -t circleci_wafer_deploy .
             docker tag $DOCKERHUB_USER/$IMAGE_NAME:latest public.ecr.aws/s9p2p2e3/$IMAGE_NAME:latest
             docker push public.ecr.aws/s9p2p2e3/$IMAGE_NAME:latest
 workflows:
@@ -86,7 +80,12 @@ workflows:
 
 
 
+#            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+#            docker tag $DOCKERHUB_USER/$IMAGE_NAME:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:$TAG
+#            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:$TAG
 
+
+# docker build -t circleci_wafer_deploy .
 
 
 
